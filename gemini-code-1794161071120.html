@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credential Lookup</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 350px;
+        }
+        h2 { margin-top: 0; color: #333; font-size: 20px; text-align: center; }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 15px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover { background-color: #0056b3; }
+        #result {
+            margin-top: 20px;
+            padding: 12px;
+            background: #e9ecef;
+            border-radius: 4px;
+            display: none;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Retrieve Your Login</h2>
+    <input type="email" id="emailInput" placeholder="Enter your email address...">
+    <button onclick="lookupCredentials()">Lookup Details</button>
+    <div id="result"></div>
+</div>
+
+<script>
+    // ==========================================
+    // PUT YOUR PREDETERMINED USERS RIGHT HERE:
+    // ==========================================
+    const credentialsDatabase = {
+        "abullington28@student.signature.edu": { username: "imc811796", password: "2247213700" },
+"mfei27@student.signature.edu": { username: "imc811797", password: "2347233701" },
+"ekumapley27@student.signature.edu": { username: "imc811798", password: "2847256702" },
+"ali27@student.signature.edu": { username: "imc811799", password: "2047280703" },
+"aarora29@student.signature.edu": { username: "imc811800", password: "2847303704" },
+"pbahuva30@student.signature.edu": { username: "imc811801", password: "2547326705" },
+"cbaker28@student.signature.edu": { username: "imc811802", password: "2647350706" },
+"lbrandle28@student.signature.edu": { username: "imc811803", password: "2147373707" },
+"hcasebolt30@student.signature.edu": { username: "imc811804", password: "2247396708" },
+"vchandar30@student.signature.edu": { username: "imc811805", password: "2147420709" },
+"kchang27@student.signature.edu": { username: "imc811806", password: "2647443710" },
+"lchang29@student.signature.edu": { username: "imc811807", password: "2647466711" },
+"echase29@student.signature.edu": { username: "imc811808", password: "2747490712" },
+"cchen28@student.signature.edu": { username: "imc811809", password: "2247510713" },
+"ecreech28@student.signature.edu": { username: "imc811810", password: "2347536714" },
+"jdavis28@student.signature.edu": { username: "imc811811", password: "2347560715" },
+"adecamps29@student.signature.edu": { username: "imc811812", password: "2847580716" },
+"sdonea27@student.signature.edu": { username: "imc811813", password: "2047603717" },
+"egildersleeve27@student.signature.edu": { username: "imc811814", password: "2447626718" },
+"jgokulnath27@student.signature.edu": { username: "imc811815", password: "2647650719" },
+"wgoth30@student.signature.edu": { username: "imc811816", password: "2447670720" },
+"zguo29@student.signature.edu": { username: "imc811817", password: "2647693721" },
+"thiggins28@student.signature.edu": { username: "imc811818", password: "2747716722" },
+"ehilton28@student.signature.edu": { username: "imc811819", password: "2647740723" },
+"bhochmeister29@student.signature.edu": { username: "imc811820", password: "2247760724" },
+"hhochmeister29@student.signature.edu": { username: "imc811821", password: "2347783725" },
+"ejaramillo28@student.signature.edu": { username: "imc811822", password: "2247803726" },
+"sjondhale30@student.signature.edu": { username: "imc811823", password: "2747826727" },
+"skarthikeyan29@student.signature.edu": { username: "imc811824", password: "2047850728" },
+"gkaur29@student.signature.edu": { username: "imc811825", password: "2347873729" },
+"mkhachikyan29@student.signature.edu": { username: "imc811826", password: "2547896730" },
+"akudiyirikkal anil29@student.signature.edu": { username: "imc811827", password: "2447916731" },
+"klau27@student.signature.edu": { username: "imc811828", password: "2547940732" },
+"amaurya30@student.signature.edu": { username: "imc811829", password: "2047963733" },
+"dmodi29@student.signature.edu": { username: "imc811830", password: "2147983734" },
+"omodi29@student.signature.edu": { username: "imc811831", password: "20486735" },
+"hmullins27@student.signature.edu": { username: "imc811832", password: "264830736" },
+"amuthukumar28@student.signature.edu": { username: "imc811833", password: "264853737" },
+"nohonba27@student.signature.edu": { username: "imc811834", password: "214876738" },
+"honate-ayala27@student.signature.edu": { username: "imc811835", password: "2348100739" },
+"tpal28@student.signature.edu": { username: "imc811836", password: "2248120740" },
+"kpatel29@student.signature.edu": { username: "imc811837", password: "2048143741" },
+"ipatil30@student.signature.edu": { username: "imc811838", password: "2848166742" },
+"nraghavan28@student.signature.edu": { username: "imc811839", password: "2048190743" },
+"traghuram28@student.signature.edu": { username: "imc811840", password: "3748213744" },
+"drucker29@student.signature.edu": { username: "imc811841", password: "3848236745" },
+"cruhnke29@student.signature.edu": { username: "imc811842", password: "3748260746" },
+"asaravanan29@student.signature.edu": { username: "imc811843", password: "3448280747" },
+"tsheth30@student.signature.edu": { username: "imc811844", password: "3348303748" },
+"mthomason30@student.signature.edu": { username: "imc811845", password: "3848326749" },
+"ltummala29@student.signature.edu": { username: "imc811846", password: "3148350750" },
+"buluc29@student.signature.edu": { username: "imc811847", password: "3048376751" },
+"wwallace30@student.signature.edu": { username: "imc811848", password: "3648400752" },
+"ewang29@student.signature.edu": { username: "imc811849", password: "3548423753" },
+"lwang29@student.signature.edu": { username: "imc811850", password: "3748446754" },
+"mwaseem29@student.signature.edu": { username: "imc811851", password: "3348470755" },
+"ewilbourne29@student.signature.edu": { username: "imc811852", password: "3248493756" },
+"jwilbourne28@student.signature.edu": { username: "imc811853", password: "3848516757" },
+"kxu28@student.signature.edu": { username: "imc811854", password: "3848540758" },
+"cyang30@student.signature.edu": { username: "imc811855", password: "3048560759" },
+"hyogi30@student.signature.edu": { username: "imc811856", password: "3848583760" }
+    };
+
+    function lookupCredentials() {
+        const email = document.getElementById("emailInput").value.trim().toLowerCase();
+        const resultDiv = document.getElementById("result");
+        
+        if (!email) {
+            resultDiv.style.display = "block";
+            resultDiv.innerHTML = "<span style='color: red;'>Please enter an email address.</span>";
+            return;
+        }
+
+        const record = credentialsDatabase[email];
+        
+        resultDiv.style.display = "block";
+        if (record) {
+            resultDiv.innerHTML = `<strong>Username:</strong> ${record.username}<br><strong>Password:</strong> ${record.password}<br>
+Go to <a href="http://imc.international-maths-challenge.com">imc.international-maths-challenge.com</a>`;
+
+        } else {
+            resultDiv.innerHTML = "<span style='color: #d9534f;'>Email not found in the system.</span>";
+        }
+    }
+</script>
+
+</body>
+</html>
